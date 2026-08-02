@@ -1,0 +1,66 @@
+name: MangaReader
+options:
+  bundleIdPrefix: com.mangareader
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+  generateEmptyDirectories: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    TARGETED_DEVICE_FAMILY: "2"
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    SWIFT_STRICT_CONCURRENCY: minimal
+packages:
+  GRDB:
+    url: https://github.com/groue/GRDB.swift
+    from: 7.0.0
+  SwiftArchive:
+    url: https://github.com/matteo-pacini/libarchive-for-swift
+    exactVersion: 1.0.0
+schemes:
+  MangaReader:
+    build:
+      targets:
+        MangaReader: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - MangaReaderTests
+targets:
+  MangaReader:
+    type: application
+    platform: iOS
+    sources:
+      - path: MangaReader
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mangareader.app
+        PRODUCT_NAME: MangaReader
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_FILE: MangaReader/Info.plist
+        SWIFT_OBJC_BRIDGING_HEADER: $(SRCROOT)/MangaReader/Bridging-Header.h
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks"
+    dependencies:
+      - package: GRDB
+      - package: SwiftArchive
+        product: SwiftArchive
+  MangaReaderTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: MangaReaderTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/MangaReader.app/MangaReader
+        BUNDLE_LOADER: $(TEST_HOST)
+    dependencies:
+      - target: MangaReader
+      - package: GRDB

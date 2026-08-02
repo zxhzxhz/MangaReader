@@ -1,0 +1,60 @@
+/* Root */
+"MangaReader" = "漫画阅读器";
+"Settings" = "设置";
+"Error" = "错误";
+"OK" = "好";
+"Cancel" = "取消";
+"Save" = "保存";
+"Done" = "完成";
+"Delete" = "删除";
+"Rename" = "重命名";
+"Move" = "移动";
+"Copy" = "复制";
+"Root" = "根目录";
+"Move To" = "移动到";
+"Copy To" = "复制到";
+
+/* Library */
+"Custom Cover" = "自定义封面";
+"Extract to Folder" = "解压为文件夹";
+"Resolve Mixed Folder" = "处理混合文件夹";
+"Choose Cover" = "选择封面";
+"Load More" = "加载更多";
+"Empty Folder" = "空文件夹";
+"No books" = "暂无书籍";
+
+/* Reader */
+"Enhance On" = "增强已开启";
+"Enhance Off" = "增强已关闭";
+"Right to Left" = "从右到左";
+"Left to Right" = "从左到右";
+"Page Failed" = "页面加载失败";
+"Unable to Open" = "无法打开";
+
+/* Settings */
+"ONNX Models" = "ONNX 模型";
+"Default Model" = "默认模型";
+"Cache" = "缓存";
+"Clear Derived Cache" = "清空派生缓存";
+"About" = "关于";
+"Version" = "版本";
+"Build" = "构建号";
+"Third-Party Notices" = "第三方声明";
+"Model Files" = "模型文件";
+"Profiles" = "模型配置";
+"Create Profile" = "创建配置";
+"Edit Profile" = "编辑配置";
+"Identity" = "基本信息";
+"Inference" = "推理参数";
+"Image Format" = "图像格式";
+"Execution" = "执行";
+"Denoise" = "降噪";
+"Name" = "名称";
+"Model File" = "模型文件";
+"Input Tensor" = "输入 Tensor";
+"Output Tensor" = "输出 Tensor";
+"Color Space" = "色彩空间";
+"Normalization" = "归一化";
+"Alpha Mode" = "Alpha 模式";
+"Provider" = "执行后端";
+"Level" = "级别";

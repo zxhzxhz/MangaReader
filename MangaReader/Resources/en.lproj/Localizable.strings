@@ -1,0 +1,60 @@
+/* Root */
+"MangaReader" = "MangaReader";
+"Settings" = "Settings";
+"Error" = "Error";
+"OK" = "OK";
+"Cancel" = "Cancel";
+"Save" = "Save";
+"Done" = "Done";
+"Delete" = "Delete";
+"Rename" = "Rename";
+"Move" = "Move";
+"Copy" = "Copy";
+"Root" = "Root";
+"Move To" = "Move To";
+"Copy To" = "Copy To";
+
+/* Library */
+"Custom Cover" = "Custom Cover";
+"Extract to Folder" = "Extract to Folder";
+"Resolve Mixed Folder" = "Resolve Mixed Folder";
+"Choose Cover" = "Choose Cover";
+"Load More" = "Load More";
+"Empty Folder" = "Empty Folder";
+"No books" = "No books";
+
+/* Reader */
+"Enhance On" = "Enhance On";
+"Enhance Off" = "Enhance Off";
+"Right to Left" = "Right to Left";
+"Left to Right" = "Left to Right";
+"Page Failed" = "Page Failed";
+"Unable to Open" = "Unable to Open";
+
+/* Settings */
+"ONNX Models" = "ONNX Models";
+"Default Model" = "Default Model";
+"Cache" = "Cache";
+"Clear Derived Cache" = "Clear Derived Cache";
+"About" = "About";
+"Version" = "Version";
+"Build" = "Build";
+"Third-Party Notices" = "Third-Party Notices";
+"Model Files" = "Model Files";
+"Profiles" = "Profiles";
+"Create Profile" = "Create Profile";
+"Edit Profile" = "Edit Profile";
+"Identity" = "Identity";
+"Inference" = "Inference";
+"Image Format" = "Image Format";
+"Execution" = "Execution";
+"Denoise" = "Denoise";
+"Name" = "Name";
+"Model File" = "Model File";
+"Input Tensor" = "Input Tensor";
+"Output Tensor" = "Output Tensor";
+"Color Space" = "Color Space";
+"Normalization" = "Normalization";
+"Alpha Mode" = "Alpha Mode";
+"Provider" = "Provider";
+"Level" = "Level";

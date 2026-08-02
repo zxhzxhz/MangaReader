@@ -1,0 +1,13 @@
+.DS_Store
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+Pods/
+*.xcworkspace
+MangaReader.xcodeproj
+project.xcworkspace
+Package.resolved
+*.ipa
+Payload/
+.swiftpm/
