@@ -64,7 +64,7 @@ actor ArchiveService {
         let password = KeychainStore.password(forBookID: item.id)
         if url.pathExtension.lowercased() == "rar" {
             let archive = try URKArchive(url: url)
-            if archive.isPasswordProtected {
+            if archive.isPasswordProtected() {
                 guard let password, !password.isEmpty else {
                     throw ArchiveServiceError.passwordRequired
                 }
@@ -331,7 +331,7 @@ actor ArchiveService {
             throw ArchiveServiceError.limitReached("recursion depth")
         }
         let archive = try URKArchive(url: url)
-        if archive.isPasswordProtected {
+        if archive.isPasswordProtected() {
             guard let password, !password.isEmpty else {
                 throw ArchiveServiceError.passwordRequired
             }
@@ -389,7 +389,7 @@ actor ArchiveService {
     private func readRARPage(parts: [String], archiveURL: URL, password: String?) async throws -> Data {
         if parts.count == 1 {
             let archive = try URKArchive(url: archiveURL)
-            if archive.isPasswordProtected {
+            if archive.isPasswordProtected() {
                 guard let password, !password.isEmpty else {
                     throw ArchiveServiceError.passwordRequired
                 }
@@ -399,7 +399,7 @@ actor ArchiveService {
         }
 
         let archive = try URKArchive(url: archiveURL)
-        if archive.isPasswordProtected {
+        if archive.isPasswordProtected() {
             guard let password, !password.isEmpty else {
                 throw ArchiveServiceError.passwordRequired
             }
