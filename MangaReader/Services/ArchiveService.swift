@@ -63,20 +63,14 @@ actor ArchiveService {
         }
         let password = KeychainStore.password(forBookID: item.id)
         if url.pathExtension.lowercased() == "rar" {
-            var error: NSError?
-            guard let archive = URKArchive(url: url, error: &error) else {
-                throw ArchiveServiceError.invalidArchive(error?.localizedDescription ?? "unable to open RAR")
-            }
+            let archive = try URKArchive(url: url)
             if archive.isPasswordProtected {
                 guard let password, !password.isEmpty else {
                     throw ArchiveServiceError.passwordRequired
                 }
                 archive.password = password
             }
-            let ok = archive.extractFiles(to: destination.path, overwrite: true, error: &error)
-            guard ok else {
-                throw ArchiveServiceError.invalidArchive(error?.localizedDescription ?? "RAR extraction failed")
-            }
+            try archive.extractFiles(to: destination.path, overwrite: true)
         } else {
             try extractLibArchive(at: url, to: destination, password: password)
         }
@@ -336,19 +330,14 @@ actor ArchiveService {
         guard depth <= ArchiveLimits.maxDepth else {
             throw ArchiveServiceError.limitReached("recursion depth")
         }
-        var error: NSError?
-        guard let archive = URKArchive(url: url, error: &error) else {
-            throw ArchiveServiceError.invalidArchive(error?.localizedDescription ?? "unable to open RAR")
-        }
+        let archive = try URKArchive(url: url)
         if archive.isPasswordProtected {
             guard let password, !password.isEmpty else {
                 throw ArchiveServiceError.passwordRequired
             }
             archive.password = password
         }
-        guard let fileInfo = archive.listFileInfo(&error) else {
-            throw ArchiveServiceError.invalidArchive(error?.localizedDescription ?? "unable to list RAR")
-        }
+        let fileInfo = try archive.listFileInfo()
 
         var pages: [ArchivePage] = []
         var entriesSeen = entryCount
@@ -370,10 +359,7 @@ actor ArchiveService {
                     throw ArchiveServiceError.limitReached("estimated total size")
                 }
             } else if ContainerClassifier.isArchiveFile(safePath) && depth < ArchiveLimits.maxDepth {
-                var dataError: NSError?
-                guard let data = archive.extractData(fromFile: safePath, error: &dataError) else {
-                    throw ArchiveServiceError.invalidArchive(dataError?.localizedDescription ?? "nested RAR read failed")
-                }
+                let data = try archive.extractData(fromFile: safePath)
                 guard Int64(data.count) <= ArchiveLimits.maxSingleEntryBytes else {
                     throw ArchiveServiceError.limitReached("nested archive size")
                 }
@@ -402,35 +388,24 @@ actor ArchiveService {
 
     private func readRARPage(parts: [String], archiveURL: URL, password: String?) async throws -> Data {
         if parts.count == 1 {
-            var error: NSError?
-            guard let archive = URKArchive(url: archiveURL, error: &error) else {
-                throw ArchiveServiceError.invalidArchive(error?.localizedDescription ?? "unable to open RAR")
-            }
+            let archive = try URKArchive(url: archiveURL)
             if archive.isPasswordProtected {
                 guard let password, !password.isEmpty else {
                     throw ArchiveServiceError.passwordRequired
                 }
                 archive.password = password
             }
-            guard let data = archive.extractData(fromFile: parts[0], error: &error) else {
-                throw ArchiveServiceError.invalidArchive(error?.localizedDescription ?? "RAR page read failed")
-            }
-            return data
+            return try archive.extractData(fromFile: parts[0])
         }
 
-        var error: NSError?
-        guard let archive = URKArchive(url: archiveURL, error: &error) else {
-            throw ArchiveServiceError.invalidArchive(error?.localizedDescription ?? "unable to open RAR")
-        }
+        let archive = try URKArchive(url: archiveURL)
         if archive.isPasswordProtected {
             guard let password, !password.isEmpty else {
                 throw ArchiveServiceError.passwordRequired
             }
             archive.password = password
         }
-        guard let data = archive.extractData(fromFile: parts[0], error: &error) else {
-            throw ArchiveServiceError.invalidArchive(error?.localizedDescription ?? "nested RAR read failed")
-        }
+        let data = try archive.extractData(fromFile: parts[0])
         let nestedURL = AppPaths.extractedDirectory.appendingPathComponent("\(UUID().uuidString).rar")
         defer { try? FileManager.default.removeItem(at: nestedURL) }
         try data.write(to: nestedURL)

@@ -120,6 +120,7 @@ struct AppDatabase {
     }
 
     func save(_ item: LibraryItem) throws {
+        var item = item
         try dbQueue.write { db in
             try item.save(db)
         }
@@ -138,6 +139,7 @@ struct AppDatabase {
     }
 
     func save(_ profile: ModelProfile) throws {
+        var profile = profile
         try dbQueue.write { db in
             try profile.save(db)
         }

@@ -109,7 +109,7 @@ actor UpscaleService {
             throw UpscaleError.modelMissing(profile.modelFileName)
         }
 
-        let options = ORTSessionOptions()
+        let options = try ORTSessionOptions()
         try options.setGraphOptimizationLevel(.all)
         try options.setIntraOpNumThreads(2)
         try options.setLogSeverityLevel(.warning)

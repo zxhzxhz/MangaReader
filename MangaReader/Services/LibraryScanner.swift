@@ -143,7 +143,9 @@ actor LibraryScanner {
                     if child.hasDirectoryPath {
                         nodes.append(contentsOf: try discoverFolder(child, relativePath: rel))
                     } else {
-                        nodes.append(try archiveNode(url: child, relativePath: rel))
+                        if let node = archiveNode(url: child, relativePath: rel) {
+                            nodes.append(node)
+                        }
                     }
                 }
                 return nodes

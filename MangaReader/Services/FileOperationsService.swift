@@ -118,7 +118,7 @@ actor FileOperationsService {
         return rootCopy
     }
 
-    func delete(_ item: LibraryItem) throws {
+    func delete(_ item: LibraryItem) async throws {
         if item.isVirtual {
             try? db.delete(item)
             await CacheManager.shared.purge(bookID: item.id)

@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-struct PageReference: Identifiable, Equatable, Sendable {
+struct PageReference: Identifiable, Equatable, Sendable, Codable {
     let path: String
 
     var id: String {
