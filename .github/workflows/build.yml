@@ -25,12 +25,23 @@ jobs:
       - name: Install pods
         run: pod install --repo-update
 
+      - name: Resolve iPad simulator
+        id: simulator
+        run: |
+          IPAD=$(xcrun simctl list devices available | grep -E 'iPad' | head -1 | sed -E 's/^[[:space:]]*//' | cut -d '(' -f1 | sed 's/[[:space:]]*$//')
+          if [ -n "$IPAD" ]; then
+            echo "test_destination=platform=iOS Simulator,name=$IPAD" >> "$GITHUB_OUTPUT"
+          else
+            echo "test_destination=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Unit tests
+        if: steps.simulator.outputs.test_destination != ''
         run: >
           xcodebuild test
           -workspace MangaReader.xcworkspace
           -scheme MangaReader
-          -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4)'
+          -destination '${{ steps.simulator.outputs.test_destination }}'
           -derivedDataPath DerivedData
           SWIFT_STRICT_CONCURRENCY=minimal
 
