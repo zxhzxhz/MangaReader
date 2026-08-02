@@ -50,7 +50,7 @@ targets:
     dependencies:
       - package: GRDB
       - package: SwiftArchive
-        product: SwiftArchive
+        product: libarchive
   MangaReaderTests:
     type: bundle.unit-test
     platform: iOS
