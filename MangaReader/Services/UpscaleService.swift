@@ -33,8 +33,7 @@ actor UpscaleService {
     private var sessions: [UUID: ORTSession] = [:]
 
     init() {
-        var error: NSError?
-        self.env = ORTEnv(loggingLevel: .warning, error: &error)
+        self.env = try? ORTEnv(loggingLevel: .warning)
     }
 
     func validate(_ profile: ModelProfile) async throws -> (width: Int, height: Int) {
@@ -110,27 +109,23 @@ actor UpscaleService {
             throw UpscaleError.modelMissing(profile.modelFileName)
         }
 
-        var error: NSError?
         let options = ORTSessionOptions()
-        try options.setGraphOptimizationLevel(.all, error: &error)
-        try options.setIntraOpNumThreads(2, error: &error)
-        try options.setLogSeverityLevel(.warning, error: &error)
+        try options.setGraphOptimizationLevel(.all)
+        try options.setIntraOpNumThreads(2)
+        try options.setLogSeverityLevel(.warning)
 
         if profile.executionProvider != .cpu {
             let coreMLOptions = ORTCoreMLExecutionProviderOptions()
             coreMLOptions.createMLProgram = true
             coreMLOptions.onlyAllowStaticInputShapes = true
-            try options.appendCoreMLExecutionProvider(with: coreMLOptions, error: &error)
+            try options.appendCoreMLExecutionProvider(with: coreMLOptions)
         }
 
-        guard let session = ORTSession(
+        let session = try ORTSession(
             env: env,
             modelPath: modelURL.path,
-            sessionOptions: options,
-            error: &error
-        ) else {
-            throw UpscaleError.sessionFailed(error?.localizedDescription ?? "unknown")
-        }
+            sessionOptions: options
+        )
         sessions[profile.id] = session
         return session
     }
@@ -209,29 +204,23 @@ actor UpscaleService {
     ) throws -> [Float] {
         let count = tileW * tileH * 3
         let data = NSMutableData(data: input.withUnsafeBytes { Data($0) })
-        var error: NSError?
-        guard let value = ORTValue(
+        let value = try ORTValue(
             tensorData: data,
             elementType: .float,
-            shape: [1, 3, tileH, tileW].map { NSNumber(value: $0) },
-            error: &error
-        ) else {
-            throw UpscaleError.runFailed(error?.localizedDescription ?? "input creation failed")
-        }
+            shape: [1, 3, tileH, tileW].map { NSNumber(value: $0) }
+        )
 
-        guard let outputs = session.run(
+        let outputs = try session.run(
             withInputs: [profile.inputName: value],
             outputNames: [profile.outputName],
-            runOptions: nil,
-            error: &error
-        ), let outputValue = outputs[profile.outputName] else {
-            throw UpscaleError.runFailed(error?.localizedDescription ?? "run failed")
+            runOptions: nil
+        )
+        guard let outputValue = outputs[profile.outputName] else {
+            throw UpscaleError.runFailed("run failed")
         }
 
-        guard let shapeInfo = outputValue.tensorTypeAndShapeInfo(withError: &error),
-              let outputData = outputValue.tensorData(withError: &error) else {
-            throw UpscaleError.runFailed(error?.localizedDescription ?? "output read failed")
-        }
+        let shapeInfo = try outputValue.tensorTypeAndShapeInfo()
+        let outputData = try outputValue.tensorData() as Data
         let shape = shapeInfo.shape.compactMap { $0.intValue }
         guard shape.count == 4 else {
             throw UpscaleError.outputShapeMismatch(expected: "1x3xHxW", actual: shape.map(String.init).joined(separator: "x"))
@@ -246,10 +235,12 @@ actor UpscaleService {
         }
 
         let floatCount = outH * outW * 3
-        let pointer = outputData.bytes.bindMemory(to: Float.self, capacity: floatCount)
         var floats = [Float](repeating: 0, count: floatCount)
-        for i in 0..<floatCount {
-            floats[i] = pointer[i]
+        outputData.withUnsafeBytes { rawBuffer in
+            let pointer = rawBuffer.bindMemory(to: Float.self)
+            for i in 0..<floatCount {
+                floats[i] = pointer[i]
+            }
         }
         return floats
     }

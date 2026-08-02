@@ -29,8 +29,8 @@ struct CropViewControllerWrapper: UIViewControllerRepresentable {
 
         func cropViewController(
             _ cropViewController: TOCropViewController,
-            didCropToImage image: UIImage,
-            withRect cropRect: CGRect,
+            didCropTo image: UIImage,
+            with cropRect: CGRect,
             angle: Int
         ) {
             onCrop(image)
