@@ -28,9 +28,9 @@ jobs:
       - name: Resolve iPad simulator
         id: simulator
         run: |
-          IPAD=$(xcrun simctl list devices available | grep -E 'iPad' | head -1 | sed -E 's/^[[:space:]]*//' | cut -d '(' -f1 | sed 's/[[:space:]]*$//')
-          if [ -n "$IPAD" ]; then
-            echo "test_destination=platform=iOS Simulator,name=$IPAD" >> "$GITHUB_OUTPUT"
+          DEST=$(xcodebuild -workspace MangaReader.xcworkspace -scheme MangaReader -showdestinations 2>/dev/null | grep 'platform:iOS Simulator' | grep 'iPad' | head -1 | sed -n 's/.*name:\(.*\) }/\1/p')
+          if [ -n "$DEST" ]; then
+            echo "test_destination=platform=iOS Simulator,name=$DEST" >> "$GITHUB_OUTPUT"
           else
             echo "test_destination=" >> "$GITHUB_OUTPUT"
           fi
