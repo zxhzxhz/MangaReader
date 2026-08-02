@@ -5,7 +5,7 @@ use_frameworks!
 
 target 'MangaReader' do
   pod 'onnxruntime-objc', '~> 1.20'
-  pod 'UnrarKit', '~> 2.11'
+  pod 'UnrarKit', '~> 2.10'
   pod 'TOCropViewController', '~> 2.6'
   pod 'libwebp', '~> 1.3'
 end
