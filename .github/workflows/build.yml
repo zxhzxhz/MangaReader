@@ -32,6 +32,7 @@ jobs:
           -scheme MangaReader
           -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4)'
           -derivedDataPath DerivedData
+          SWIFT_STRICT_CONCURRENCY=minimal
 
       - name: Build unsigned IPA
         run: |
@@ -44,6 +45,7 @@ jobs:
             -derivedDataPath DerivedData \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
+            SWIFT_STRICT_CONCURRENCY=minimal \
             build
           mkdir -p Payload
           cp -R "DerivedData/Build/Products/Release-iphoneos/MangaReader.app" Payload/
